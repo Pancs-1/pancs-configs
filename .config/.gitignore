@@ -1,0 +1,16 @@
+*
+!.gitignore
+
+!cava/
+!fastfetch/
+!foot/
+!hypr/
+!nvim/
+!waybar/
+
+!cava/**
+!fastfetch/**
+!foot/**
+!hypr/**
+!nvim/**
+!waybar/**

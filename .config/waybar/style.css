@@ -1,0 +1,51 @@
+/* Reset & Global styles */
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrains Mono", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: rgba(30, 30, 46, 0.8); /* Semi-transparent dark background */
+    color: #cdd6f4;
+    transition-property: background-color;
+    transition-duration: .5s;
+}
+
+/* Workspaces Module */
+#workspaces button {
+    padding: 0 5px;
+    background: transparent;
+    color: #a6adc8;
+}
+
+#workspaces button.active {
+    color: #cba6f7;
+    font-weight: bold;
+}
+
+#workspaces button.urgent {
+    color: #f38ba8;
+}
+
+/* Center Clock */
+#clock {
+    font-weight: bold;
+    color: #cdd6f4;
+}
+
+/* System Tray */
+#tray {
+    padding: 0 10px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+}
+
