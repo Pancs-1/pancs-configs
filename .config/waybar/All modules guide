@@ -1,0 +1,157 @@
+================================================================================
+WAYBAR CORE MODULES & PROPERTIES REFERENCE GUIDE
+================================================================================
+
+This document covers the core modules provided by Waybar and their most common 
+and important properties. Waybar configuration uses JSONC format.
+
+--------------------------------------------------------------------------------
+1. GLOBAL MODULE PROPERTIES (Applies to almost all modules)
+--------------------------------------------------------------------------------
+- format            : (string) Defines the text/layout to display. Supports Pango 
+                      markup and placeholder tokens specific to the module.
+- rotate            : (integer) Rotate the module by 0, 90, 180, or 270 degrees.
+- max-length        : (integer) The maximum length of the module text in characters.
+- min-length        : (integer) The minimum length of the module text in characters.
+- align             : (float) Alignment of the text within the module (0.0 to 1.0).
+- tooltip           : (bool) Enable or disable the hover tooltip. Default: true.
+- tooltip-format    : (string) Format of the text inside the tooltip.
+- on-click          : (string) Command executed when left-clicking the module.
+- on-click-middle   : (string) Command executed when middle-clicking the module.
+- on-click-right    : (string) Command executed when right-clicking the module.
+- on-scroll-up      : (string) Command executed when scrolling up over the module.
+- on-scroll-down    : (string) Command executed when scrolling down over the module.
+- interval          : (integer) Refresh interval in seconds for polling modules.
+
+--------------------------------------------------------------------------------
+2. SYSTEM PERFORMANCE MODULES
+--------------------------------------------------------------------------------
+
+[ cpu ]
+Monitors overall CPU utilization.
+- format            : Default is "{usage}%".
+- format-icons      : (array) List of icons representing usage tiers.
+- states            : (object) Threshold map defining CSS classes (e.g. "warning": 70).
+
+[ memory ]
+Monitors system RAM and swap usage.
+- format            : Default "{percentage}%". Tokens: {used}, {total}, {avail}.
+- states            : (object) Threshold map for styling alert states.
+
+[ disk ]
+Monitors disk space usage for a specified path.
+- path              : (string) Mount point to monitor. Default is "/".
+- format            : Default "{percentage_used}%". Tokens: {free}, {total}, {used}.
+
+[ temperature ]
+Monitors system hardware temperatures.
+- thermal-zone      : (integer) The thermal zone index to track from ACPI.
+- hwmon-path        : (string) Absolute path to a specific hwmon sysfs file instead.
+- critical-threshold: (integer) Temperature value at which the 'critical' class applies.
+- format            : Default "{temperatureC}°C".
+
+--------------------------------------------------------------------------------
+3. HARDWARE & STATUS MODULES
+--------------------------------------------------------------------------------
+
+[ battery ]
+Monitors battery status, capacity, and power states.
+- bat               : (string) Specific battery device name (e.g., "BAT0").
+- adapter           : (string) Specific AC adapter device name (e.g., "AC").
+- full-at           : (integer) Define capacity threshold to consider "Full" (e.g. 98).
+- format-charging   : (string) Format displayed when plugged in.
+- format-discharging: (string) Format displayed on battery power.
+- format-icons      : (array/object) Icons mapping to specific capacity percentages.
+
+[ network ]
+Monitors Wi-Fi and Ethernet connection states.
+- interface         : (string) Specific network interface (e.g., "wlan0").
+- format-wifi       : (string) Format when connected to Wi-Fi. (Tokens: {essid}, {signaldBm}).
+- format-ethernet   : (string) Format when connected via cable. (Tokens: {ipaddr}, {cidr}).
+- format-disconnected: (string) Format when offline.
+
+[ backlight ]
+Controls and displays monitor brightness levels.
+- device            : (string) Specific backlight device name.
+- format            : Default "{percent}%".
+- on-scroll-up/down : Useful for adjusting brightness using brightnessctl or light.
+
+[ wireplumber ] / [ pulseaudio ]
+Monitors and manages system audio volume and mute state.
+- format            : Default "{volume}%".
+- format-muted      : Text/icon to show when muted.
+- scroll-step       : (float) Percentage change per scroll tick.
+- on-click          : Usually paired with tools like "pavucontrol" or volume muting toggles.
+
+[ bluetooth ]
+Monitors bluetooth adapter state and connected devices.
+- format            : Display format when active.
+- format-disabled   : Display format when disabled.
+- format-connected  : Format when devices are paired (Tokens: {num_connections}, {device_alias}).
+- on-click          : Usually mapped to a manager GUI like "blueman-manager".
+
+--------------------------------------------------------------------------------
+4. ENVIRONMENT & ENVIRONMENT MANAGERS
+--------------------------------------------------------------------------------
+
+[ clock ]
+Displays time, date, and calendar.
+- format            : Standard strftime formatting (e.g., "{:%H:%M}").
+- format-alt        : Format toggled when clicked.
+- timezone          : (string) Force a specific timezone (e.g., "America/New_York").
+- actions           : (object) Custom configurations for calendar scrolling/clicking.
+
+[ idle_inhibitor ]
+Toggles window manager idle state rules (inhibits screen lockers/sleep modes).
+- format            : Structure using icons for active/inactive modes.
+- format-icons      : (object) e.g., {"activated": "", "deactivated": ""}.
+
+[ tray ]
+Displays system tray icons for background applications.
+- icon-size         : (integer) Defines the width/height of application tray icons.
+- spacing           : (integer) Margin spacing between items inside the tray.
+- show-passive-items: (bool) Whether to render passive tray applications.
+
+--------------------------------------------------------------------------------
+5. COMPOSITOR SPECIFIC MODULES (Hyprland / Sway)
+--------------------------------------------------------------------------------
+
+[ hyprland/workspaces ] / [ sway/workspaces ]
+Monitors and controls workspace switching.
+- format            : Format for workspace items. Supports token {name}.
+- on-click          : Default action changes active workspace to the target clicked.
+- all-outputs       : (bool) Show all workspaces across all monitors if true.
+- format-icons      : (object) Map workspace designations/names to custom icons.
+
+[ hyprland/window ] / [ sway/window ]
+Displays the title of the currently focused window.
+- format            : Default "{title}".
+- max-length        : Highly recommended to avoid bar layout breaking on long titles.
+- rewrite           : (object) Regex dictionary map to clean up long title names.
+
+[ hyprland/submap ] / [ sway/mode ]
+Displays current input submaps or binding configurations (e.g., resizing modes).
+- format            : Default "{}" (outputs the mode name string).
+
+--------------------------------------------------------------------------------
+6. UTILITY & EXTENSION MODULES
+--------------------------------------------------------------------------------
+
+[ group ]
+A container module that aggregates multiple modules into structural layouts.
+- modules           : (array) List of children modules nested inside this group.
+- orientation       : (string) Layout flow direction: "horizontal" or "vertical".
+- drawer            : (object) Turns group into a collapsible panel.
+    - transition-duration : (integer) Animation slide duration in milliseconds.
+    - click-to-reveal    : (bool) Toggle drawer via click instead of hover.
+
+[ custom/<name> ]
+User-defined custom script runner module.
+- exec              : (string) The terminal command or script path to run.
+- exec-if           : (string) Guard command; script only runs if this exits with code 0.
+- return-type       : (string) Expected stdout parsing mode: "json" or string.
+- restart-interval  : (integer) Re-run interval loop if the script is not endless.
+- signal            : (integer) POSIX signal tracking integer to trigger immediate refresh.
+- escape            : (bool) Escape special XML/HTML markup tags from script output.
+================================================================================
+

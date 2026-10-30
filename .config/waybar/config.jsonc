@@ -1,22 +1,281 @@
 {
+    // =========================================================================
+    // GLOBAL BAR CONFIGURATION
+    // =========================================================================
     "layer": "top",
     "position": "top",
-    "height": 30,
+    "height": 34,
     "spacing": 4,
-    
-    // Choose the order of the modules
-    "modules-left": ["hyprland/workspaces"],
-    "modules-center": ["clock"],
-    "modules-right": ["tray"],
+    "margin-top": 0,
+    "margin-bottom": 0,
 
-    // Modules configuration
-    "clock": {
-        "format": "{:%H:%M}",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    // Module Layout Arrangement
+    "modules-left": [
+        "hyprland/workspaces",
+        "sway/workspaces",
+        "hyprland/submap",
+        "sway/mode",
+        "hyprland/window",
+        "sway/window"
+    ],
+    "modules-center": [
+        "clock",
+        "idle_inhibitor"
+    ],
+    "modules-right": [
+        "group/hardware",
+        "group/connections",
+        "backlight",
+        "wireplumber",
+        "pulseaudio",
+        "tray"
+    ],
+
+    // =========================================================================
+    // COMPOSITOR SPECIFIC MODULES (LEFT)
+    // =========================================================================
+
+    "hyprland/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "active-only": false,
+        "on-click": "activate",
+        "format": "{name} {icon}",
+        "format-icons": {
+            "1": "🪟",
+            "2": "🌐",
+            "3": "💻",
+            "4": "🎵",
+            "urgent": "⚠️",
+            "active": "",
+            "default": ""
+        }
     },
+
+    "sway/workspaces": {
+        "disable-scroll": false,
+        "all-outputs": true,
+        "format": "{name}: {icon}",
+        "format-icons": {
+            "1": "🖥️",
+            "2": "🌐",
+            "focused": "",
+            "default": ""
+        }
+    },
+
+    "hyprland/window": {
+        "format": "⭐ {title}",
+        "max-length": 40,
+        "separate-outputs": true,
+        "rewrite": {
+            "(.*) — Mozilla Firefox": "🦊 $1",
+            "(.*) - Visual Studio Code": "💻 $1",
+            "bash": "🐚 Terminal"
+        }
+    },
+
+    "sway/window": {
+        "format": "🌲 {title}",
+        "max-length": 40
+    },
+
+    "hyprland/submap": {
+        "format": "✌️ Submap: <span style=\"italic\">{}</span>",
+        "max-length": 20,
+        "tooltip": false
+    },
+
+    "sway/mode": {
+        "format": "🛠️ Mode: <span style=\"italic\">{}</span>",
+        "tooltip": false
+    },
+
+    // =========================================================================
+    // ENVIRONMENT MODULES (CENTER)
+    // =========================================================================
+
+    "clock": {
+        "timezone": "America/New_York",
+        "format": "🕒 {:%H:%M:%S}",
+        "format-alt": "📅 {:%A, %B %d, %Y}",
+        "interval": 1,
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "year",
+            "mode-mon-col": 3,
+            "weeks-pos": "right",
+            "on-scroll": 1,
+            "format": {
+                "months": "<span color='#ffead3'><b>{}</b></span>",
+                "days": "<span color='#eccbf5'><b>{}</b></span>",
+                "weeks": "<span color='#99ffdd'><b>W{}</b></span>",
+                "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
+                "today": "<span color='#ff6666'><b><u>{}</u></b></span>"
+            }
+        },
+        "actions": {
+            "on-click-right": "mode",
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down"
+        }
+    },
+
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "  Awake",
+            "deactivated": "  Sleepy"
+        },
+        "tooltip": true,
+        "tooltip-format-activated": "Idling is Inhibited",
+        "tooltip-format-deactivated": "Idling is Allowed"
+    },
+
+    // =========================================================================
+    // HARDWARE GROUP & MODULES (RIGHT)
+    // =========================================================================
+
+    "group/hardware": {
+        "orientation": "horizontal",
+        "modules": [
+            "cpu",
+            "memory",
+            "disk",
+            "temperature",
+            "battery"
+        ]
+    },
+
+    "cpu": {
+        "interval": 2,
+        "format": " {usage}%",
+        "states": {
+            "warning": 70,
+            "critical": 90
+        }
+    },
+
+    "memory": {
+        "interval": 5,
+        "format": " {percentage}%",
+        "tooltip-format": "RAM: {used:0.1f}GiB / {total:0.1f}GiB\nSwap: {swapUsed:0.1f}GiB / {swapTotal:0.1f}GiB",
+        "states": {
+            "critical": 85
+        }
+    },
+
+    "disk": {
+        "interval": 30,
+        "path": "/",
+        "format": "💾 {percentage_used}%",
+        "tooltip-format": "Disk Space: {used} used out of {total} on {path}"
+    },
+
+    "temperature": {
+        "interval": 2,
+        "thermal-zone": 2,
+        "critical-threshold": 80,
+        "format": " {temperatureC}°C",
+        "format-critical": "🔥 {temperatureC}°C"
+    },
+
+    "battery": {
+        "interval": 10,
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "⚡ {capacity}%",
+        "format-plugged": "🔌 {capacity}%",
+        "format-icons": ["", "", "", "", ""],
+        "max-length": 25
+    },
+
+    // =========================================================================
+    // NETWORKING GROUP & MODULES (RIGHT)
+    // =========================================================================
+
+    "group/connections": {
+        "orientation": "horizontal",
+        "drawer": {
+            "transition-duration": 500,
+            "click-to-reveal": true
+        },
+        "modules": [
+            "network",
+            "bluetooth"
+        ]
+    },
+
+    "network": {
+        "interval": 2,
+        "format-wifi": " {essid}",
+        "format-ethernet": "🖧 {ipaddr}/{cidr}",
+        "format-linked": "🖧 {ifname} (No IP)",
+        "format-disconnected": "🚫 Disconnected",
+        "tooltip-format": "Signal Strength: {signaldBm}dBm | Up: {bandwidthUpBytes} Down: {bandwidthDownBytes}",
+        "on-click": "nm-connection-editor"
+    },
+
+    "bluetooth": {
+        "format": " On",
+        "format-disabled": " Off",
+        "format-connected": " {num_connections} Connected",
+        "tooltip-format": "Adapter status: {status}",
+        "tooltip-format-connected": "Bluetooth Adapter:\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "• {device_alias} ({device_address})",
+        "on-click": "blueman-manager"
+    },
+
+    // =========================================================================
+    // MULTIMEDIA & UTILITIES (RIGHT)
+    // =========================================================================
+
+    "backlight": {
+        "device": "intel_backlight",
+        "format": "{icon} {percent}%",
+        "format-icons": ["🌑", "🌘", "🌗", "🌖", "🌕"],
+        "on-scroll-up": "brightnessctl set +5%",
+        "on-scroll-down": "brightnessctl set 5%-"
+    },
+
+    "wireplumber": {
+        "format": "🔊 {volume}%",
+        "format-muted": "🔇 Muted",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
+        "max-length": 10
+    },
+
+    "pulseaudio": {
+        "format": "🎵 {volume}%",
+        "format-bluetooth": " {volume}%",
+        "format-muted": "🔇 Muted",
+        "on-click": "pavucontrol",
+        "scroll-step": 5
+    },
+
     "tray": {
-        "icon-size": 16,
-        "spacing": 10
+        "icon-size": 18,
+        "spacing": 10,
+        "show-passive-items": true
+    },
+
+    // =========================================================================
+    // EXTENSION CUSTOM MODULE EXTRA EXAMPLE
+    // =========================================================================
+    "custom/media": {
+        "format": "🎵 {}",
+        "escape": true,
+        "return-type": "json",
+        "max-length": 40,
+        "on-click": "playerctl play-pause",
+        "on-scroll-up": "playerctl next",
+        "on-scroll-down": "playerctl previous",
+        "exec": "playerctl -a metadata --format '{\"text\": \"{{artist}} - {{title}}\", \"tooltip\": \"{{userName}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F"
     }
 }
 
