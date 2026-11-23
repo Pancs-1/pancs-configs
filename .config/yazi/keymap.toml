@@ -1,8 +1,7 @@
-# Copy yanked files to the system clipboard
 [[mgr.prepend_keymap]]
-on  = "y"
-run = [ "yank", 'plugin clipboard -- --action=copy' ]
-desc = "Yank selected files (copy)"
+on  = "Y"
+run = "plugin clipboard -- --action=copy"
+desc = "Yank selected files to clipboard (copy)"
 
 # Keep behaviour consistent with cut
 [[mgr.prepend_keymap]]
@@ -14,4 +13,15 @@ desc = "Yank selected files (cut)"
 [[mgr.prepend_keymap]]
 on  = "<C-p>"
 run = [ 'plugin clipboard -- --action=paste' ]
-desc = "Paste yanked system clipboard files"
+desc = "Paste yanked files from clipboard"
+
+[[mgr.prepend_keymap]]
+on  = ["g", "V"]
+run = [ 'cd /run/media/pancsrah/VAULT' ]
+desc = "jump to VAULT"
+
+[[mgr.prepend_keymap]]
+on   = "!"
+for  = "unix"
+run  = 'shell "$SHELL" --block'
+desc = "Open $SHELL here"

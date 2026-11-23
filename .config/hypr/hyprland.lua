@@ -21,7 +21,7 @@
 ---- MONITORS ----
 ------------------
 
--- See https://wiki.hypr.land/Configuring/Basics/Monitors/
+-- See https://wiki.hypr.land/Configuring/BasicMonitors/
 hl.monitor({
     output   = "",
     mode     = "1600x900@60",
@@ -45,7 +45,7 @@ hl.monitor({
 -- Set programs that you use
 local terminal    = "footclient"
 local fileManager = "footclient -e yazi"
-local menu        = "pkill fuzzel || fuzzel"
+local menu        = "pkill rofi || rofi -show drun"
 
 
 -------------------
@@ -63,8 +63,13 @@ local menu        = "pkill fuzzel || fuzzel"
 --   hl.exec_cmd("waybar & hyprpaper & firefox")
 -- end)
 hl.on("hyprland.start", function () 
+	--Looks
+	hl.exec_cmd("hyprpaper")
+
+	--Utils
 	hl.exec_cmd("foot --server")
-        hl.exec_cmd("awww-daemon")
+        hl.exec_cmd("udiskie")
+        hl.exec_cmd("nm-applet")
 end)
 
 -------------------------------
@@ -109,7 +114,7 @@ hl.config({
         border_size = 2,
 
         col = {
-            active_border   = { colors = {"rgba(ff0000ee)", "rgba(d10000ee)"}, angle = 45 },
+            active_border   = { colors = {"rgba(4d010dee)", "rgba(3a151cee)"}, angle = 45 },
             inactive_border = "rgba(595959aa)",
         },
 
@@ -149,7 +154,11 @@ hl.config({
             brightness = 0.82,
             vibrancy = 0.17,
             popups = true,
+	    -- variant = "drops",
         },
+
+	 dim_inactive = true,
+	 dim_strength = 0.12
 
     },
 
@@ -180,10 +189,12 @@ hl.animation({ leaf = "layersIn",      enabled = true,  speed = 4,    bezier = "
 hl.animation({ leaf = "layersOut",     enabled = true,  speed = 1.5,  bezier = "linear",       style = "fade" })
 hl.animation({ leaf = "fadeLayersIn",  enabled = true,  speed = 1.79, bezier = "almostLinear" })
 hl.animation({ leaf = "fadeLayersOut", enabled = true,  speed = 1.39, bezier = "almostLinear" })
-hl.animation({ leaf = "workspaces",    enabled = true,  speed = 3, bezier = "myWorkspaceBezier", style = "slide" })
-hl.animation({ leaf = "workspacesIn",  enabled = true,  speed = 3, bezier = "myWorkspaceBezier", style = "slide" })
-hl.animation({ leaf = "workspacesOut", enabled = true,  speed = 3, bezier = "myWorkspaceBezier", style = "slide" })
+hl.animation({ leaf = "workspaces",    enabled = true,  speed = 3,    bezier = "myWorkspaceBezier", style = "slide" })
+hl.animation({ leaf = "workspacesIn",  enabled = true,  speed = 3,    bezier = "myWorkspaceBezier", style = "slide" })
+hl.animation({ leaf = "workspacesOut", enabled = true,  speed = 3,    bezier = "myWorkspaceBezier", style = "slide" })
 hl.animation({ leaf = "zoomFactor",    enabled = true,  speed = 7,    bezier = "quick" })
+hl.animation({ leaf = "monitorAdded",  enabled = false, speed = 10,   curve = "default"})
+
 
 
 
@@ -286,7 +297,21 @@ local closeWindowBind = hl.bind(mainMod .. " + C", hl.dsp.window.close())
 -- closeWindowBind:set_enabled(false)
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
-hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
+
+-- make it float and resize
+hl.bind("SUPER + V", function()
+    local w = hl.get_active_window()
+    if w == nil then return end
+
+    local was_tiled = not w.floating
+    hl.dispatch(hl.dsp.window.float({ action = "toggle", window = w }))
+
+    if was_tiled then
+        hl.dispatch(hl.dsp.window.resize({ x = 800, y = 600, relative = false, window = w }))
+        hl.dispatch(hl.dsp.window.center({ window = w }))
+    end
+end)
+
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))-- dwindle only
@@ -307,8 +332,11 @@ for i = 1, 10 do
 end
 
 -- Example special workspace (scratchpad)
-hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
+hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("music"))
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:music" }))
+
+hl.bind(mainMod .. " + G",         hl.dsp.workspace.toggle_special("games"))
+hl.bind(mainMod .. " + SHIFT + G", hl.dsp.window.move({ workspace = "special:games" }))
 
 -- Scroll through existing workspaces with mainMod + scroll
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
