@@ -8,6 +8,7 @@
 !nvim/
 !waybar/
 !yazi/
+!Scripts/
 
 !cava/**
 !fastfetch/**
@@ -17,3 +18,4 @@
 !waybar/**
 !yazi/**
 yazi/plugins
+!Scripts/**
